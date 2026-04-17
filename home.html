@@ -15,7 +15,7 @@
     <div class="navbar-content">
       <a href="./home.html" class="logo">🪴 Plant Haven</a>
       <div class="nav-links">
-        <a href="./cart.html" id="cartNavLink">Cart (0)</a>
+        <button class="nav-cart-btn" id="cartNavBtn" aria-label="Open cart">Cart (0)</button>
       </div>
     </div>
   </nav>
@@ -45,8 +45,25 @@
   <div class="plants-grid" id="plantsContainer">
     <!-- Plants will be dynamically inserted here -->
   </div>
-  
-</body>
+
+  <!-- ─── Plant Detail Modal ──────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="plantModal" role="dialog" aria-modal="true" aria-label="Plant details">
+    <div class="modal-panel glass-effect">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close modal">&times;</button>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ─── Cart Drawer ─────────────────────────────────────────────────────── -->
+  <div class="drawer-overlay" id="cartDrawerOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+    <div class="drawer-header">
+      <h2>Your Cart</h2>
+      <button class="drawer-close" onclick="closeCartDrawer()" aria-label="Close cart">&times;</button>
+    </div>
+    <div class="drawer-items" id="drawerItems"></div>
+    <div class="drawer-footer" id="drawerFooter"></div>
+  </aside>
 
   <script src="./javascript/home.js"></script>
 </body>
