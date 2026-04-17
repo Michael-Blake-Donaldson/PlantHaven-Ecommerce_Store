@@ -1,29 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart | Plant Haven</title>
-    <link rel="stylesheet" href="./styles/home.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your Plant Haven shopping cart.">
+  <title>Cart | Plant Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/home.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-content">
-            <div class="logo">🪴 Plant Haven</div>
-            <div class="nav-links">
-                <a href="./home.html">Home</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="cart-container">
-        <h1>Your Cart</h1>
-        <div id="cartItems"></div>
-        <div id="cartTotal"></div>
-        <button id="checkoutButton" class="buy-button">Proceed to Checkout</button>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="./home.html" class="logo">🪴 Plant Haven</a>
+      <div class="nav-links">
+        <a href="./home.html">← Continue Shopping</a>
+      </div>
     </div>
+  </nav>
 
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="./javascript/cart.js"></script>
+  <div class="cart-page">
+    <div class="cart-main">
+      <h1>Your Cart</h1>
+      <div id="cartItems"></div>
+    </div>
+    <aside class="cart-summary glass-effect">
+      <h2>Order Summary</h2>
+      <div id="cartTotal"></div>
+      <button id="checkoutButton" class="buy-button" style="display:none;">Proceed to Checkout</button>
+      <a href="./home.html" class="back-link">← Continue Shopping</a>
+    </aside>
+  </div>
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="./javascript/cart.js"></script>
 </body>
 </html>

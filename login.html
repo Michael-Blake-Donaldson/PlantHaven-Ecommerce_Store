@@ -1,21 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In | Plant Haven</title>
-    <link rel="stylesheet" href="./styles/home.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Log in to your Plant Haven account.">
+  <title>Log In | Plant Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/home.css">
 </head>
 <body>
-    <div class="auth-container">
-        <h1>Log In</h1>
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Email Address" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit" class="buy-button">Log In</button>
-        </form>
-        <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="./home.html" class="logo">🪴 Plant Haven</a>
+      <div class="nav-links"></div>
     </div>
-    <script src="./javascript/auth.js"></script>
+  </nav>
+  <div class="auth-container">
+    <h1>Log In</h1>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email Address" aria-label="Email address" required>
+      <input type="password" id="password" placeholder="Password" aria-label="Password" required>
+      <button type="submit" class="buy-button">Log In</button>
+    </form>
+    <p>Don't have an account? <a href="./signup.html">Sign Up</a></p>
+  </div>
+  <script src="./javascript/auth.js"></script>
 </body>
 </html>

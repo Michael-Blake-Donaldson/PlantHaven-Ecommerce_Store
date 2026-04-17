@@ -1,16 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Success | Plant Haven</title>
-    <link rel="stylesheet" href="./styles/home.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Order confirmed — thank you for shopping with Plant Haven.">
+  <title>Order Confirmed | Plant Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/home.css">
 </head>
 <body>
-    <div class="auth-container">
-        <h1>Payment Successful!</h1>
-        <p>Thank you for your purchase.</p>
-        <a href="./home.html" class="buy-button">Return to Home</a>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="./home.html" class="logo">🪴 Plant Haven</a>
+      <div class="nav-links"></div>
     </div>
+  </nav>
+
+  <div class="success-container">
+    <div class="success-icon">🪴</div>
+    <h1>Order Confirmed!</h1>
+    <p>Thank you for your purchase. Your plants are on their way. A confirmation email will be sent to you shortly.</p>
+    <a href="./home.html" class="buy-button">Continue Shopping</a>
+  </div>
+
+  <script>
+    // Clear cart after successful payment
+    localStorage.removeItem('cart');
+  </script>
 </body>
 </html>

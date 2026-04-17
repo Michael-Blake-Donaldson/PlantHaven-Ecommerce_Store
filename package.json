@@ -1,0 +1,8 @@
+{
+  "name": "planthaven",
+  "version": "1.0.0",
+  "description": "Plant Haven e-commerce store",
+  "dependencies": {
+    "stripe": "^16.0.0"
+  }
+}
