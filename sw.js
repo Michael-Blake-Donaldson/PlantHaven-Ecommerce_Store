@@ -1,4 +1,4 @@
-const CACHE_NAME = 'plant-haven-v1';
+const CACHE_NAME = 'plant-haven-v2';
 
 // Assets that should always be available offline
 const STATIC_ASSETS = [
