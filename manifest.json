@@ -1,0 +1,32 @@
+{
+  "name": "Plant Haven",
+  "short_name": "Plant Haven",
+  "description": "Shop rare and beautiful indoor plants with expert care guidance.",
+  "start_url": "/home.html",
+  "display": "standalone",
+  "background_color": "#f6f8fd",
+  "theme_color": "#2b2d42",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/chinesevergreen.webp",
+      "sizes": "800x600",
+      "type": "image/webp"
+    }
+  ],
+  "categories": ["shopping", "lifestyle"]
+}

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Plant Haven — Shop rare and beautiful indoor plants with expert care guidance.">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#2b2d42">
   <title>Plant Haven | Your Online Plant Paradise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,5 +80,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./javascript/supabase-config.js"></script>
   <script src="./javascript/home.js"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');</script>
 </body>
 </html>
