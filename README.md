@@ -6,11 +6,9 @@
   **A full-stack e-commerce storefront for indoor plant enthusiasts.**  
   Built with vanilla HTML, CSS, and JavaScript — powered by Supabase, Stripe, and Netlify.
 
-  [![Netlify Status](https://api.netlify.com/api/v1/badges/placeholder/deploy-status)](https://planthaven.netlify.app)
   ![GitHub last commit](https://img.shields.io/github/last-commit/Michael-Blake-Donaldson/PlantHaven-Ecommerce_Store)
   ![License](https://img.shields.io/github/license/Michael-Blake-Donaldson/PlantHaven-Ecommerce_Store)
 
-  [Live Demo](https://planthaven.netlify.app) · [Browse Plants](https://planthaven.netlify.app/home.html) · [Take the Quiz](https://planthaven.netlify.app/quiz.html)
 </div>
 
 ---
