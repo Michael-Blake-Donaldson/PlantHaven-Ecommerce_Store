@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://planthaven.netlify.app/sitemap.xml
+
+# Disallow internal/auth pages from indexing
+Disallow: /orders.html
+Disallow: /success.html
