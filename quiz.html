@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Take the Plant Haven quiz to find the perfect plant for your home and lifestyle.">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#2b2d42">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Find Your Perfect Plant | Plant Haven">
+  <meta property="og:description" content="Answer 3 quick questions and we'll match you with the perfect houseplant.">
+  <meta property="og:url" content="https://planthaven.netlify.app/quiz.html">
+  <title>Plant Quiz | Plant Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/home.css">
+  <script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .quiz-wrapper {
+      max-width: 640px;
+      margin: 3rem auto;
+      padding: 0 1.5rem 4rem;
+    }
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .quiz-header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .quiz-header p {
+      color: var(--text-secondary, #6c757d);
+      font-size: 1rem;
+    }
+    /* Progress */
+    .quiz-progress {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .quiz-progress-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--border, #e9ecef);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .quiz-progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .quiz-progress-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary, #6c757d);
+      white-space: nowrap;
+    }
+    /* Step card */
+    .quiz-step {
+      display: none;
+      animation: fadeInUp 0.35s ease;
+    }
+    .quiz-step.active { display: block; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .quiz-question {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .quiz-options {
+      display: grid;
+      gap: 0.75rem;
+    }
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--card-bg, #fff);
+      border: 2px solid var(--border, #e9ecef);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      text-align: left;
+      width: 100%;
+      font-family: inherit;
+      color: var(--text);
+    }
+    .quiz-option:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .quiz-option.selected {
+      border-color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 8%, transparent);
+    }
+    .quiz-option-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .quiz-option-text strong { display: block; font-size: 0.95rem; font-weight: 600; }
+    .quiz-option-text span  { font-size: 0.8rem; color: var(--text-secondary, #6c757d); }
+    /* Nav buttons */
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.75rem;
+      gap: 1rem;
+    }
+    .quiz-nav-back {
+      background: none;
+      border: 1px solid var(--border, #e9ecef);
+      border-radius: 8px;
+      padding: 0.6rem 1.25rem;
+      cursor: pointer;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: background 0.15s;
+    }
+    .quiz-nav-back:hover { background: var(--border, #e9ecef); }
+    /* Results */
+    .quiz-results { display: none; animation: fadeInUp 0.4s ease; }
+    .quiz-results.active { display: block; }
+    .quiz-results-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .quiz-results-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.4rem; }
+    .quiz-results-header p  { color: var(--text-secondary, #6c757d); }
+    .quiz-result-cards { display: grid; gap: 1.25rem; }
+    .quiz-result-card {
+      display: flex;
+      gap: 1.25rem;
+      background: var(--card-bg, #fff);
+      border: 1px solid var(--border, #e9ecef);
+      border-radius: 14px;
+      padding: 1.25rem;
+      align-items: center;
+    }
+    .quiz-result-img {
+      width: 90px;
+      height: 90px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--border, #e9ecef);
+    }
+    .quiz-result-info { flex: 1; }
+    .quiz-result-info h3 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
+    .quiz-result-info p  { font-size: 0.82rem; color: var(--text-secondary, #6c757d); margin-bottom: 0.5rem; }
+    .quiz-result-info .price { font-weight: 700; color: var(--primary); font-size: 0.95rem; }
+    .quiz-match-badge {
+      display: inline-block;
+      background: #d4edda;
+      color: #155724;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 99px;
+      margin-bottom: 0.4rem;
+    }
+    [data-theme="dark"] .quiz-match-badge { background: #1a3a24; color: #6fcf97; }
+    .quiz-add-btn {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .quiz-retake-row { text-align: center; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="./home.html" class="logo">🪴 Plant Haven</a>
+      <div class="nav-links">
+        <button class="icon-btn" id="darkModeToggle" aria-label="Switch to dark mode">🌙</button>
+        <a href="./home.html">Shop</a>
+        <a href="./cart.html">Cart 🛒</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="quiz-wrapper">
+    <div class="quiz-header">
+      <h1>🌿 Find Your Perfect Plant</h1>
+      <p>Answer 3 quick questions and we'll match you with a plant that suits your life.</p>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="quiz-progress" id="quizProgress">
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+      <span class="quiz-progress-label" id="progressLabel">Question 1 of 3</span>
+    </div>
+
+    <!-- Step 1: Light -->
+    <div class="quiz-step active" id="step1">
+      <p class="quiz-question">☀️ How much natural light does your space get?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="light" data-v="bright" onclick="selectOption(this)">
+          <span class="quiz-option-icon">🌞</span>
+          <span class="quiz-option-text">
+            <strong>Bright &amp; sunny</strong>
+            <span>Near a south or west-facing window</span>
+          </span>
+        </button>
+        <button class="quiz-option" data-q="light" data-v="medium" onclick="selectOption(this)">
+          <span class="quiz-option-icon">🌤</span>
+          <span class="quiz-option-text">
+            <strong>Indirect or filtered light</strong>
+            <span>A few feet from a window, some shade</span>
+          </span>
+        </button>
+        <button class="quiz-option" data-q="light" data-v="low" onclick="selectOption(this)">
+          <span class="quiz-option-icon">🌥</span>
+          <span class="quiz-option-text">
+            <strong>Low light</strong>
+            <span>North-facing room, dim corner, or office</span>
+          </span>
+        </button>
+      </div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="buy-button" onclick="nextStep(1)" id="next1" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Pets -->
+    <div class="quiz-step" id="step2">
+      <p class="quiz-question">🐾 Do you have pets or young children at home?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="pets" data-v="yes" onclick="selectOption(this)">
+          <span class="quiz-option-icon">🐶</span>
+          <span class="quiz-option-text">
+            <strong>Yes — show me pet-safe options</strong>
+            <span>Safety first for furry or little ones</span>
+          </span>
+        </button>
+        <button class="quiz-option" data-q="pets" data-v="no" onclick="selectOption(this)">
+          <span class="quiz-option-icon">🚫</span>
+          <span class="quiz-option-text">
+            <strong>No pets or young children</strong>
+            <span>Open to all plant types</span>
+          </span>
+        </button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-nav-back" onclick="prevStep(2)">← Back</button>
+        <button class="buy-button" onclick="nextStep(2)" id="next2" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Water -->
+    <div class="quiz-step" id="step3">
+      <p class="quiz-question">💧 How often do you want to water your plant?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-q="water" data-v="frequent" onclick="selectOption(this)">
+          <span class="quiz-option-icon">🚿</span>
+          <span class="quiz-option-text">
+            <strong>I love the ritual — weekly is fine</strong>
+            <span>You'll check on it regularly</span>
+          </span>
+        </button>
+        <button class="quiz-option" data-q="water" data-v="moderate" onclick="selectOption(this)">
+          <span class="quiz-option-icon">🌦</span>
+          <span class="quiz-option-text">
+            <strong>Every couple of weeks</strong>
+            <span>Occasional care, mostly self-sufficient</span>
+          </span>
+        </button>
+        <button class="quiz-option" data-q="water" data-v="minimal" onclick="selectOption(this)">
+          <span class="quiz-option-icon">🏜</span>
+          <span class="quiz-option-text">
+            <strong>I tend to forget — keep it low</strong>
+            <span>The more forgiving, the better</span>
+          </span>
+        </button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-nav-back" onclick="prevStep(3)">← Back</button>
+        <button class="buy-button" onclick="showResults()" id="next3" disabled>See My Matches 🌱</button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="quiz-results" id="quizResults">
+      <div class="quiz-results-header">
+        <h2 id="resultsHeading">Your matches</h2>
+        <p id="resultsSubhead"></p>
+      </div>
+      <div class="quiz-result-cards" id="resultCards"></div>
+      <div class="quiz-retake-row">
+        <button class="buy-button secondary outline" onclick="restartQuiz()">Retake Quiz</button>
+        <a href="./home.html" class="buy-button" style="margin-left:0.75rem">Browse All Plants</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ─── Dark mode ────────────────────────────────────────────────────────────
+    const toggle = document.getElementById('darkModeToggle');
+    function applyDarkMode(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+      toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+    applyDarkMode(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+    toggle.addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyDarkMode(next);
+    });
+
+    // ─── Plant data (mirrors home.js LOCAL_PLANTS) ────────────────────────────
+    const PLANTS = [
+      { id: 1, name: "Chinese Evergreen", price: 2999, image: "./assets/chinesevergreen.webp",
+        light: "medium", petSafe: false, water: "moderate", difficulty: "medium",
+        care: "Low to medium indirect light. Easy and forgiving." },
+      { id: 2, name: "Fiddle Leaf Fig", price: 3999, image: "./assets/FiddleLeafFig.jpg",
+        light: "bright", petSafe: false, water: "frequent", difficulty: "hard",
+        care: "Bright filtered light. Loves consistency." },
+      { id: 3, name: "Money Tree", price: 5999, image: "./assets/MoneyTree.jpg",
+        light: "medium", petSafe: true, water: "moderate", difficulty: "easy",
+        care: "Bright indirect light. Pet-friendly and easygoing." },
+      { id: 4, name: "Dieffenbachia", price: 1999, image: "./assets/Dieffenbachia.jpg",
+        light: "low", petSafe: false, water: "minimal", difficulty: "easy",
+        care: "Thrives in low light. Very low maintenance." },
+    ];
+
+    // ─── Quiz state ───────────────────────────────────────────────────────────
+    const answers = {};
+
+    function selectOption(btn) {
+      const q = btn.dataset.q;
+      const v = btn.dataset.v;
+      // Deselect siblings
+      btn.closest('.quiz-options').querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+      btn.classList.add('selected');
+      answers[q] = v;
+      // Enable next button for this step
+      const step = btn.closest('.quiz-step').id.replace('step', '');
+      const nextBtn = document.getElementById('next' + step);
+      if (nextBtn) nextBtn.disabled = false;
+    }
+
+    function nextStep(current) {
+      document.getElementById('step' + current).classList.remove('active');
+      document.getElementById('step' + (current + 1)).classList.add('active');
+      updateProgress(current + 1);
+    }
+
+    function prevStep(current) {
+      document.getElementById('step' + current).classList.remove('active');
+      document.getElementById('step' + (current - 1)).classList.add('active');
+      updateProgress(current - 1);
+    }
+
+    function updateProgress(step) {
+      const pct = ((step - 1) / 3) * 100;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = `Question ${step} of 3`;
+    }
+
+    // ─── Scoring ──────────────────────────────────────────────────────────────
+    function scorePlant(plant) {
+      let score = 0;
+      // Light match
+      if (answers.light === 'bright' && plant.light === 'bright') score += 3;
+      else if (answers.light === 'medium' && (plant.light === 'medium' || plant.light === 'bright')) score += 3;
+      else if (answers.light === 'low' && (plant.light === 'low' || plant.light === 'medium')) score += 3;
+      else score += 1; // partial credit
+      // Pet safety
+      if (answers.pets === 'yes' && plant.petSafe) score += 5;
+      else if (answers.pets === 'yes' && !plant.petSafe) score -= 3;
+      else score += 2;
+      // Water match
+      if (answers.water === 'frequent' && plant.water === 'frequent') score += 3;
+      else if (answers.water === 'moderate' && plant.water === 'moderate') score += 3;
+      else if (answers.water === 'minimal' && plant.water === 'minimal') score += 3;
+      else score += 1;
+      return score;
+    }
+
+    function showResults() {
+      // Hide all steps and progress
+      document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('quizProgress').style.display = 'none';
+      document.getElementById('progressLabel').style.display = 'none';
+
+      const scored = PLANTS.map(p => ({ ...p, score: scorePlant(p) }))
+        .sort((a, b) => b.score - a.score);
+
+      const top = scored.slice(0, 2);
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      document.getElementById('resultsHeading').textContent = '🌱 Your perfect matches';
+      document.getElementById('resultsSubhead').textContent =
+        `Based on your answers, here are the plants most suited to your home.`;
+
+      document.getElementById('resultCards').innerHTML = top.map(plant => {
+        const inCart = cart.some(c => c.id === plant.id);
+        return `
+          <div class="quiz-result-card">
+            <img class="quiz-result-img" src="${plant.image}" alt="${plant.name}" loading="lazy">
+            <div class="quiz-result-info">
+              <span class="quiz-match-badge">★ Great Match</span>
+              <h3>${plant.name}</h3>
+              <p>${plant.care}</p>
+              <div class="price">$${(plant.price / 100).toFixed(2)}</div>
+              <button class="buy-button quiz-add-btn${inCart ? ' secondary' : ''}"
+                id="qbtn-${plant.id}"
+                onclick="quizAddToCart(${plant.id}, '${plant.name}', ${plant.price}, '${plant.image}')">
+                ${inCart ? '✓ In Cart' : 'Add to Cart'}
+              </button>
+            </div>
+          </div>`;
+      }).join('');
+
+      document.getElementById('quizResults').classList.add('active');
+    }
+
+    function quizAddToCart(id, name, price, image) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const existing = cart.find(c => c.id === id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ id, name, price, image, quantity: 1 });
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      const btn = document.getElementById('qbtn-' + id);
+      btn.textContent = '✓ In Cart';
+      btn.classList.add('secondary');
+      showToast(name + ' added to cart!');
+    }
+
+    // Simple toast (self-contained so quiz page has no extra JS deps)
+    function showToast(message) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-success toast-visible';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => { toast.classList.remove('toast-visible'); setTimeout(() => toast.remove(), 300); }, 3000);
+    }
+
+    function restartQuiz() {
+      Object.keys(answers).forEach(k => delete answers[k]);
+      document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+      ['next1','next2','next3'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = true; });
+      document.getElementById('quizResults').classList.remove('active');
+      document.getElementById('quizProgress').style.display = '';
+      updateProgress(1);
+      document.getElementById('step1').classList.add('active');
+    }
+  </script>
+</body>
+</html>

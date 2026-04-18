@@ -739,6 +739,22 @@ body {
   color: var(--secondary);
 }
 
+.nav-quiz-link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  padding: 0.35rem 0.85rem;
+  border: 2px solid var(--primary);
+  border-radius: 99px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-quiz-link:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
 /* ─── Card Actions (two-button row) ─────────────────────────────────────────── */
 .card-actions {
   display: flex;
