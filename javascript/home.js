@@ -295,12 +295,47 @@ function drawerRemove(plantId) {
 }
 
 // ─── Filters ──────────────────────────────────────────────────────────────────
-function filterPlants() {
-  const name = document.getElementById('nameFilter').value.toLowerCase().trim();
-  const region = document.getElementById('regionFilter').value;
-  const category = document.getElementById('categoryFilter').value;
-  const difficulty = document.getElementById('difficultyFilter').value;
+function getFilterValues() {
+  return {
+    name:       document.getElementById('nameFilter').value.toLowerCase().trim(),
+    region:     document.getElementById('regionFilter').value,
+    category:   document.getElementById('categoryFilter').value,
+    difficulty: document.getElementById('difficultyFilter').value,
+  };
+}
 
+function syncFiltersToURL({ name, region, category, difficulty }) {
+  const params = new URLSearchParams();
+  if (name)       params.set('q', name);
+  if (region)     params.set('region', region);
+  if (category)   params.set('category', category);
+  if (difficulty) params.set('difficulty', difficulty);
+  const newUrl = params.toString()
+    ? `${window.location.pathname}?${params.toString()}`
+    : window.location.pathname;
+  window.history.replaceState(null, '', newUrl);
+}
+
+function applyFiltersFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const name       = params.get('q') || '';
+  const region     = params.get('region') || '';
+  const category   = params.get('category') || '';
+  const difficulty = params.get('difficulty') || '';
+
+  document.getElementById('nameFilter').value       = name;
+  document.getElementById('regionFilter').value     = region;
+  document.getElementById('categoryFilter').value   = category;
+  document.getElementById('difficultyFilter').value = difficulty;
+
+  return { name, region, category, difficulty };
+}
+
+function filterPlants() {
+  const filters = getFilterValues();
+  syncFiltersToURL(filters);
+
+  const { name, region, category, difficulty } = filters;
   const filtered = plants.filter(plant =>
     plant.name.toLowerCase().includes(name) &&
     (!region || plant.region === region) &&
@@ -309,14 +344,15 @@ function filterPlants() {
   );
 
   renderPlants(filtered);
-  renderFilterChips({ name, region, category, difficulty });
+  renderFilterChips(filters);
 }
 
 function clearFilters() {
-  document.getElementById('nameFilter').value = '';
-  document.getElementById('regionFilter').value = '';
-  document.getElementById('categoryFilter').value = '';
+  document.getElementById('nameFilter').value       = '';
+  document.getElementById('regionFilter').value     = '';
+  document.getElementById('categoryFilter').value   = '';
   document.getElementById('difficultyFilter').value = '';
+  syncFiltersToURL({});
   renderPlants();
   renderFilterChips({});
 }
@@ -465,6 +501,12 @@ function updateDarkModeBtn(theme) {
 document.addEventListener('DOMContentLoaded', async () => {
   initDarkMode();
   await loadPlants();
+
+  // Apply any filters from the URL on first load
+  const urlFilters = applyFiltersFromURL();
+  if (Object.values(urlFilters).some(Boolean)) {
+    filterPlants();
+  }
 
   document.querySelectorAll('.filter-input').forEach(input => {
     input.addEventListener('change', filterPlants);
