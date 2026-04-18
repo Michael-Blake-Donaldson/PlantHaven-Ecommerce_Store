@@ -127,6 +127,29 @@ const LOCAL_PLANTS = [
 // Active plant array — populated by loadPlants()
 let plants = [];
 
+// ─── Lazy Image Loader ───────────────────────────────────────────────────────
+function observeLazyImages() {
+  const lazyEls = document.querySelectorAll('.lazy-bg[data-bg]');
+  if (!('IntersectionObserver' in window)) {
+    lazyEls.forEach(el => {
+      el.style.backgroundImage = `url('${el.dataset.bg}')`;
+      el.classList.remove('lazy-bg');
+    });
+    return;
+  }
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        el.style.backgroundImage = `url('${el.dataset.bg}')`;
+        el.classList.remove('lazy-bg');
+        obs.unobserve(el);
+      }
+    });
+  }, { rootMargin: '200px 0px' });
+  lazyEls.forEach(el => observer.observe(el));
+}
+
 // ─── Render Plants ────────────────────────────────────────────────────────────
 function renderPlants(filteredPlants = plants) {
   const container = document.getElementById('plantsContainer');
@@ -146,7 +169,7 @@ function renderPlants(filteredPlants = plants) {
     return `
     <div class="plant-card glass-effect">
       <button class="plant-image-btn" onclick="openModal(${plant.id})" aria-label="View details for ${plant.name}">
-        <div class="plant-image" style="background-image: url('${plant.image}')"></div>
+        <div class="plant-image lazy-bg" data-bg="${plant.image}"></div>
       </button>
       <button class="wishlist-btn${wishlisted ? ' wishlisted' : ''}" data-id="${plant.id}"
         onclick="toggleWishlist(${plant.id})"
@@ -171,6 +194,7 @@ function renderPlants(filteredPlants = plants) {
       </div>
     </div>
   `}).join('');
+  observeLazyImages();
 }
 
 // ─── Recently Viewed ──────────────────────────────────────────────────────────
@@ -204,13 +228,14 @@ function renderRecentlyViewed() {
     <div class="recently-viewed-scroll">
       ${items.map(plant => `
         <button class="rv-card" onclick="openModal(${plant.id})" aria-label="View ${plant.name}">
-          <div class="rv-image" style="background-image: url('${plant.image}')"></div>
+          <div class="rv-image lazy-bg" data-bg="${plant.image}"></div>
           <p class="rv-name">${plant.name}</p>
           <p class="rv-price">$${(plant.price / 100).toFixed(2)}</p>
         </button>
       `).join('')}
     </div>
   `;
+  observeLazyImages();
 }
 
 // ─── Plant Detail Modal ───────────────────────────────────────────────────────
