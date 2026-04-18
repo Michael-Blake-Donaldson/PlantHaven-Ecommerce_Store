@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Page not found — Plant Haven">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#2b2d42">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="404 — Page Not Found | Plant Haven">
+  <meta property="og:description" content="Oops! This page has gone to seed. Head back to Plant Haven.">
+  <meta property="og:url" content="https://planthaven.netlify.app/404.html">
+  <title>404 — Not Found | Plant Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/home.css">
+  <script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .not-found {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 72px);
+      text-align: center;
+      padding: 2rem;
+      gap: 1.25rem;
+    }
+    .not-found-icon {
+      font-size: 5rem;
+      line-height: 1;
+    }
+    .not-found-code {
+      font-size: 6rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1;
+      margin: 0;
+    }
+    .not-found-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0;
+    }
+    .not-found-message {
+      color: var(--text-secondary, #6c757d);
+      font-size: 1.05rem;
+      max-width: 420px;
+      margin: 0;
+    }
+    .not-found-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="./home.html" class="logo">🪴 Plant Haven</a>
+      <div class="nav-links">
+        <button class="icon-btn" id="darkModeToggle" aria-label="Switch to dark mode">🌙</button>
+        <a href="./home.html">Shop</a>
+        <a href="./cart.html">Cart 🛒</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="not-found">
+    <div class="not-found-icon">🌱</div>
+    <p class="not-found-code">404</p>
+    <h1 class="not-found-title">This page has gone to seed.</h1>
+    <p class="not-found-message">
+      We couldn't find what you were looking for — it may have been moved,
+      pruned, or never planted in the first place.
+    </p>
+    <div class="not-found-actions">
+      <a href="./home.html" class="buy-button">🪴 Back to Shop</a>
+      <a href="./cart.html" class="buy-button secondary outline">View Cart</a>
+    </div>
+  </main>
+
+  <script>
+    const toggle = document.getElementById('darkModeToggle');
+    function applyDarkMode(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+      toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+    applyDarkMode(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+    toggle.addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyDarkMode(next);
+    });
+  </script>
+</body>
+</html>
