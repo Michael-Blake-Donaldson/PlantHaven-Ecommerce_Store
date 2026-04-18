@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your Plant Haven order history.">
+  <title>Order History | Plant Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/home.css">
+  <script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="./home.html" class="logo">🪴 Plant Haven</a>
+      <div class="nav-links">
+        <button class="icon-btn" id="darkModeToggle" aria-label="Switch to dark mode">🌙</button>
+        <a href="./home.html">← Continue Shopping</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="orders-page">
+    <h1>Order History</h1>
+    <p class="orders-subtitle">Your recent Plant Haven purchases</p>
+    <div id="ordersContainer" class="orders-list">
+      <div class="orders-loading">Loading orders…</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./javascript/supabase-config.js"></script>
+  <script>
+    (function() {
+      // Dark mode toggle
+      var savedTheme = localStorage.getItem('theme');
+      var theme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('darkModeToggle');
+        if (btn) {
+          btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+          btn.addEventListener('click', function() {
+            var cur = document.documentElement.getAttribute('data-theme');
+            var next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            btn.textContent = next === 'dark' ? '☀️' : '🌙';
+            btn.setAttribute('aria-label', next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+          });
+        }
+
+        loadOrders();
+      });
+
+      async function loadOrders() {
+        const container = document.getElementById('ordersContainer');
+
+        // Get logged-in user email from sessionStorage
+        const userRaw = sessionStorage.getItem('loggedInUser');
+        const user = userRaw ? JSON.parse(userRaw) : null;
+
+        if (!user || !user.email) {
+          container.innerHTML = `
+            <div class="orders-empty">
+              <p>Please <a href="./login.html?returnTo=./orders.html">log in</a> to view your order history.</p>
+            </div>`;
+          return;
+        }
+
+        if (!window.supabaseClient) {
+          container.innerHTML = `
+            <div class="orders-empty">
+              <p>Order history requires Supabase to be configured.</p>
+              <p>See <code>.env.example</code> for setup instructions.</p>
+            </div>`;
+          return;
+        }
+
+        const { data: orders, error } = await window.supabaseClient
+          .from('orders')
+          .select('*')
+          .eq('customer_email', user.email)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          container.innerHTML = `<div class="orders-empty"><p>Could not load orders. Please try again.</p></div>`;
+          console.error(error);
+          return;
+        }
+
+        if (!orders || orders.length === 0) {
+          container.innerHTML = `
+            <div class="orders-empty">
+              <p>No orders yet.</p>
+              <a href="./home.html" class="buy-button">Shop Now</a>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = orders.map(order => {
+          const date = new Date(order.created_at).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric'
+          });
+          const total = (order.amount_total / 100).toFixed(2);
+          const items = Array.isArray(order.items) ? order.items : [];
+
+          const statusClass = order.payment_status === 'paid' ? 'status-paid' : 'status-pending';
+          const statusLabel = order.payment_status === 'paid' ? '✓ Paid' : order.payment_status;
+
+          return `
+            <div class="order-card glass-effect">
+              <div class="order-card-header">
+                <div>
+                  <p class="order-date">${date}</p>
+                  <p class="order-id">Order #${order.stripe_session_id.slice(-8).toUpperCase()}</p>
+                </div>
+                <div class="order-header-right">
+                  <span class="order-status ${statusClass}">${statusLabel}</span>
+                  <p class="order-total">$${total}</p>
+                </div>
+              </div>
+              ${items.length > 0 ? `
+              <ul class="order-items">
+                ${items.map(item => `
+                  <li>
+                    <span class="order-item-name">${item.name}</span>
+                    <span class="order-item-qty">× ${item.quantity}</span>
+                    <span class="order-item-price">$${(item.total / 100).toFixed(2)}</span>
+                  </li>
+                `).join('')}
+              </ul>` : ''}
+            </div>
+          `;
+        }).join('');
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Plant Haven e-commerce store",
   "dependencies": {
+    "@supabase/supabase-js": "^2.0.0",
     "stripe": "^16.0.0"
   }
 }

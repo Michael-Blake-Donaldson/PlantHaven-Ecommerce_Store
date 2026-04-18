@@ -512,6 +512,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     welcomeSpan.textContent = `Welcome, ${loggedInUser.name}`;
     navLinks.appendChild(welcomeSpan);
 
+    const ordersLink = document.createElement('a');
+    ordersLink.href = './orders.html';
+    ordersLink.textContent = 'Orders';
+    navLinks.appendChild(ordersLink);
+
     const logoutLink = document.createElement('a');
     logoutLink.href = '#';
     logoutLink.textContent = 'Log Out';

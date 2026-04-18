@@ -1357,3 +1357,134 @@ body.modal-open {
 [data-theme="dark"] .shipping-bar-msg strong {
   color: var(--dark);
 }
+
+/* ─── Orders Page ────────────────────────────────────────────────────────────── */
+.orders-page {
+  max-width: 860px;
+  margin: 100px auto 3rem;
+  padding: 0 2rem;
+}
+
+.orders-page h1 {
+  font-size: 2rem;
+  color: var(--primary);
+  margin-bottom: 0.35rem;
+}
+
+.orders-subtitle {
+  color: var(--secondary);
+  margin-bottom: 2rem;
+}
+
+.orders-loading,
+.orders-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--secondary);
+}
+
+.orders-empty a {
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.order-card {
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.order-date {
+  font-size: 0.85rem;
+  color: var(--secondary);
+}
+
+.order-id {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-top: 0.2rem;
+}
+
+.order-header-right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.order-status {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.status-paid {
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--green);
+}
+
+.status-pending {
+  background: rgba(255, 152, 0, 0.15);
+  color: #e65100;
+}
+
+.order-total {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.order-items {
+  list-style: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.order-items li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.order-item-name {
+  flex: 1;
+  color: var(--dark);
+}
+
+.order-item-qty {
+  color: var(--secondary);
+}
+
+.order-item-price {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+[data-theme="dark"] .order-card {
+  background: rgba(22, 27, 34, 0.7);
+}
+
+[data-theme="dark"] .order-items {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
