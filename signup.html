@@ -9,12 +9,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles/home.css">
+  <script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-content">
       <a href="./home.html" class="logo">🪴 Plant Haven</a>
-      <div class="nav-links"></div>
+      <div class="nav-links">
+        <button class="icon-btn" id="darkModeToggle" aria-label="Switch to dark mode">🌙</button>
+      </div>
     </div>
   </nav>
   <div class="auth-container">
@@ -27,6 +30,28 @@
     </form>
     <p>Already have an account? <a href="./login.html">Log In</a></p>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./javascript/supabase-config.js"></script>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('darkModeToggle');
+        if (!btn) return;
+        btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        btn.addEventListener('click', function() {
+          var cur = document.documentElement.getAttribute('data-theme');
+          var next = cur === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('theme', next);
+          btn.textContent = next === 'dark' ? '☀️' : '🌙';
+          btn.setAttribute('aria-label', next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+        });
+      });
+    })();
+  </script>
   <script src="./javascript/auth.js"></script>
 </body>
 </html>

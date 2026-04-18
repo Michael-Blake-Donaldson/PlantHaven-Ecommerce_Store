@@ -9,12 +9,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles/home.css">
+  <!-- Apply theme before render to prevent flash -->
+  <script>
+    (function() {
+      var t = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-content">
       <a href="./home.html" class="logo">🪴 Plant Haven</a>
       <div class="nav-links">
+        <button class="icon-btn" id="darkModeToggle" aria-label="Switch to dark mode">🌙</button>
         <button class="nav-cart-btn" id="cartNavBtn" aria-label="Open cart">Cart (0)</button>
       </div>
     </div>
@@ -42,6 +50,8 @@
     </select>
   </div>
 
+  <div class="filter-chips" id="filterChips"></div>
+
   <div class="plants-grid" id="plantsContainer">
     <!-- Plants will be dynamically inserted here -->
   </div>
@@ -65,6 +75,8 @@
     <div class="drawer-footer" id="drawerFooter"></div>
   </aside>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./javascript/supabase-config.js"></script>
   <script src="./javascript/home.js"></script>
 </body>
 </html>

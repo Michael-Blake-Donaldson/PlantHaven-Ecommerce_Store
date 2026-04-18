@@ -28,8 +28,8 @@ function showToast(message, type = 'success') {
   }, 3000);
 }
 
-// ─── Plant Data ───────────────────────────────────────────────────────────────
-const plants = [
+// ─── Local fallback plant data (used when Supabase is not yet configured) ─────
+const LOCAL_PLANTS = [
   {
     id: 1,
     name: "Chinese Evergreen",
@@ -95,6 +95,9 @@ const plants = [
     origin: "Tropical Americas"
   }
 ];
+
+// Active plant array — populated by loadPlants()
+let plants = [];
 
 // ─── Render Plants ────────────────────────────────────────────────────────────
 function renderPlants(filteredPlants = plants) {
@@ -246,7 +249,22 @@ function renderCartDrawer() {
     `;
   }).join('');
 
+  const FREE_SHIPPING_THRESHOLD = 7500; // $75.00
+  const remaining = FREE_SHIPPING_THRESHOLD - subtotal;
+  const progressPct = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
+
+  const shippingBarHtml = remaining > 0
+    ? `<div class="shipping-bar-wrap">
+        <p class="shipping-bar-msg">Add <strong>$${(remaining / 100).toFixed(2)}</strong> more for free shipping!</p>
+        <div class="shipping-bar-track"><div class="shipping-bar-fill" style="width:${progressPct.toFixed(1)}%"></div></div>
+       </div>`
+    : `<div class="shipping-bar-wrap">
+        <p class="shipping-bar-msg shipping-bar-achieved">🎉 You've unlocked free shipping!</p>
+        <div class="shipping-bar-track"><div class="shipping-bar-fill" style="width:100%"></div></div>
+       </div>`;
+
   footerEl.innerHTML = `
+    ${shippingBarHtml}
     <div class="drawer-subtotal">
       <span>Subtotal</span>
       <span>$${(subtotal / 100).toFixed(2)}</span>
@@ -291,6 +309,7 @@ function filterPlants() {
   );
 
   renderPlants(filtered);
+  renderFilterChips({ name, region, category, difficulty });
 }
 
 function clearFilters() {
@@ -298,6 +317,97 @@ function clearFilters() {
   document.getElementById('regionFilter').value = '';
   document.getElementById('categoryFilter').value = '';
   document.getElementById('difficultyFilter').value = '';
+  renderPlants();
+  renderFilterChips({});
+}
+
+// ─── Active Filter Chips ──────────────────────────────────────────────────────
+function renderFilterChips({ name = '', region = '', category = '', difficulty = '' } = {}) {
+  const container = document.getElementById('filterChips');
+  if (!container) return;
+
+  const chips = [];
+
+  const LABELS = {
+    region: { tropical: 'Tropical', desert: 'Desert', temperate: 'Temperate', subtropical: 'Subtropical' },
+    category: { indoor: 'Indoor', outdoor: 'Outdoor', rare: 'Rare', succulent: 'Succulent' },
+    difficulty: { easy: 'Easy', medium: 'Medium', hard: 'Hard' }
+  };
+
+  if (name) chips.push({ label: `"${name}"`, clear: () => { document.getElementById('nameFilter').value = ''; filterPlants(); } });
+  if (region) chips.push({ label: LABELS.region[region] || region, clear: () => { document.getElementById('regionFilter').value = ''; filterPlants(); } });
+  if (category) chips.push({ label: LABELS.category[category] || category, clear: () => { document.getElementById('categoryFilter').value = ''; filterPlants(); } });
+  if (difficulty) chips.push({ label: LABELS.difficulty[difficulty] || difficulty, clear: () => { document.getElementById('difficultyFilter').value = ''; filterPlants(); } });
+
+  if (chips.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = chips.map((chip, i) => `
+    <button class="filter-chip" data-chip-index="${i}">${chip.label} <span aria-hidden="true">×</span></button>
+  `).join('');
+
+  container.querySelectorAll('.filter-chip').forEach((btn, i) => {
+    btn.addEventListener('click', () => chips[i].clear());
+  });
+}
+
+// ─── Skeleton Loaders ─────────────────────────────────────────────────────────
+function showSkeletons(count = 4) {
+  const container = document.getElementById('plantsContainer');
+  if (!container) return;
+  container.innerHTML = Array.from({ length: count }, () => `
+    <div class="plant-card skeleton-card">
+      <div class="skeleton skeleton-image"></div>
+      <div class="skeleton-content">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-text short"></div>
+        <div class="skeleton skeleton-btn"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── Load Plants (Supabase → local fallback) ──────────────────────────────────
+async function loadPlants() {
+  showSkeletons(4);
+
+  // If Supabase is configured, fetch from DB; otherwise use local data
+  if (window.supabaseClient) {
+    try {
+      const { data, error } = await window.supabaseClient
+        .from('products')
+        .select('*')
+        .eq('in_stock', true);
+
+      if (error) throw error;
+
+      plants = data.map(row => ({
+        id: row.id,
+        name: row.name,
+        price: row.price_cents,
+        image: row.image_url,
+        category: row.category,
+        region: row.region,
+        difficulty: row.difficulty,
+        care: row.care,
+        light: row.light,
+        water: row.water,
+        humidity: row.humidity,
+        toxicity: row.toxicity,
+        size: row.size,
+        origin: row.origin
+      }));
+    } catch (err) {
+      console.warn('Supabase fetch failed, using local data:', err.message);
+      plants = LOCAL_PLANTS;
+    }
+  } else {
+    plants = LOCAL_PLANTS;
+  }
+
   renderPlants();
 }
 
@@ -327,9 +437,34 @@ function updateCartCount() {
   if (cartBtn) cartBtn.textContent = `Cart (${count})`;
 }
 
+// ─── Dark Mode ────────────────────────────────────────────────────────────────
+function initDarkMode() {
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+  updateDarkModeBtn(theme);
+}
+
+function toggleDarkMode() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateDarkModeBtn(next);
+}
+
+function updateDarkModeBtn(theme) {
+  const btn = document.getElementById('darkModeToggle');
+  if (!btn) return;
+  btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  renderPlants();
+document.addEventListener('DOMContentLoaded', async () => {
+  initDarkMode();
+  await loadPlants();
 
   document.querySelectorAll('.filter-input').forEach(input => {
     input.addEventListener('change', filterPlants);
@@ -337,6 +472,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   updateCartCount();
+
+  // Dark mode toggle
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  if (darkModeToggle) darkModeToggle.addEventListener('click', toggleDarkMode);
 
   // Cart drawer nav button
   const cartNavBtn = document.getElementById('cartNavBtn');
