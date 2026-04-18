@@ -161,7 +161,12 @@ function renderPlants(filteredPlants = plants) {
         <p class="plant-price">$${(plant.price / 100).toFixed(2)}</p>
         <div class="card-actions">
           <button class="buy-button secondary outline" onclick="openModal(${plant.id})">View Details</button>
-          <button class="buy-button" onclick="addToCart(${plant.id})">Add to Cart</button>
+          <div class="card-qty-row">
+            <button class="qty-btn card-qty-btn" onclick="cardChangeQty(${plant.id}, -1)" aria-label="Decrease quantity">−</button>
+            <span class="qty-value card-qty-val" id="card-qty-${plant.id}">1</span>
+            <button class="qty-btn card-qty-btn" onclick="cardChangeQty(${plant.id}, 1)" aria-label="Increase quantity">+</button>
+            <button class="buy-button card-add-btn" onclick="addToCartQty(${plant.id})">Add to Cart</button>
+          </div>
         </div>
       </div>
     </div>
@@ -524,7 +529,19 @@ async function loadPlants() {
 }
 
 // ─── Cart ─────────────────────────────────────────────────────────────────────
-function addToCart(plantId) {
+// Card-level quantity stepper
+function cardChangeQty(plantId, delta) {
+  const el = document.getElementById(`card-qty-${plantId}`);
+  if (!el) return;
+  let val = parseInt(el.textContent, 10) + delta;
+  if (val < 1) val = 1;
+  if (val > 99) val = 99;
+  el.textContent = val;
+}
+
+function addToCartQty(plantId) {
+  const el = document.getElementById(`card-qty-${plantId}`);
+  const qty = el ? parseInt(el.textContent, 10) : 1;
   const plant = plants.find(p => p.id === plantId);
   if (!plant) return;
 
@@ -532,15 +549,20 @@ function addToCart(plantId) {
   const existing = cart.find(item => item.id === plant.id);
 
   if (existing) {
-    existing.quantity += 1;
+    existing.quantity += qty;
   } else {
-    cart.push({ id: plant.id, name: plant.name, price: plant.price, image: plant.image, quantity: 1 });
+    cart.push({ id: plant.id, name: plant.name, price: plant.price, image: plant.image, quantity: qty });
   }
 
   saveCart(cart);
   updateCartCount();
-  showToast(`${plant.name} added to cart!`);
+  if (el) el.textContent = '1'; // reset stepper
+  showToast(`${qty > 1 ? qty + '× ' : ''}${plant.name} added to cart!`);
   openCartDrawer();
+}
+
+function addToCart(plantId) {
+  addToCartQty(plantId);
 }
 
 function updateCartCount() {

@@ -723,9 +723,27 @@ body {
 
 /* ─── Card Actions (two-button row) ─────────────────────────────────────────── */
 .card-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.card-qty-btn {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+}
+
+.card-add-btn {
+  flex: 1;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.88rem;
 }
 
 .buy-button.outline {
