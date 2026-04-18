@@ -6,6 +6,16 @@
   <meta name="description" content="Plant Haven — Shop rare and beautiful indoor plants with expert care guidance.">
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#2b2d42">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Plant Haven | Your Online Plant Paradise">
+  <meta property="og:description" content="Shop rare and beautiful indoor plants with expert care guidance. Free shipping over $75.">
+  <meta property="og:image" content="/assets/chinesevergreen.webp">
+  <meta property="og:url" content="https://planthaven.netlify.app/home.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Plant Haven">
+  <meta name="twitter:description" content="Shop rare and beautiful indoor plants with expert care guidance.">
+  <meta name="twitter:image" content="/assets/chinesevergreen.webp">
   <title>Plant Haven | Your Online Plant Paradise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +27,27 @@
       var t = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', t);
     })();
+  </script>
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "Plant Haven",
+    "description": "Shop rare and beautiful indoor plants with expert care guidance.",
+    "url": "https://planthaven.netlify.app",
+    "sameAs": [],
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "USD",
+      "offerCount": "4"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://planthaven.netlify.app/home.html?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
   </script>
 </head>
 <body>
