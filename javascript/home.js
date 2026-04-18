@@ -11,6 +11,34 @@ function getCartCount() {
   return getCart().reduce((sum, item) => sum + item.quantity, 0);
 }
 
+// ─── Wishlist Utilities ───────────────────────────────────────────────────────
+function getWishlist() {
+  return JSON.parse(localStorage.getItem('wishlist')) || [];
+}
+
+function saveWishlist(list) {
+  localStorage.setItem('wishlist', JSON.stringify(list));
+}
+
+function toggleWishlist(plantId) {
+  const list = getWishlist();
+  const idx = list.indexOf(plantId);
+  if (idx === -1) {
+    list.push(plantId);
+    saveWishlist(list);
+    showToast('Added to wishlist!', 'success');
+  } else {
+    list.splice(idx, 1);
+    saveWishlist(list);
+    showToast('Removed from wishlist.', 'info');
+  }
+  // Re-render just this card's heart without a full re-render
+  document.querySelectorAll(`.wishlist-btn[data-id="${plantId}"]`).forEach(btn => {
+    btn.classList.toggle('wishlisted', list.includes(plantId));
+    btn.setAttribute('aria-label', list.includes(plantId) ? 'Remove from wishlist' : 'Add to wishlist');
+  });
+}
+
 // ─── Toast Notifications ──────────────────────────────────────────────────────
 function showToast(message, type = 'success') {
   const existing = document.querySelector('.toast');
@@ -113,11 +141,16 @@ function renderPlants(filteredPlants = plants) {
     return;
   }
 
-  container.innerHTML = filteredPlants.map(plant => `
+  container.innerHTML = filteredPlants.map(plant => {
+    const wishlisted = getWishlist().includes(plant.id);
+    return `
     <div class="plant-card glass-effect">
       <button class="plant-image-btn" onclick="openModal(${plant.id})" aria-label="View details for ${plant.name}">
         <div class="plant-image" style="background-image: url('${plant.image}')"></div>
       </button>
+      <button class="wishlist-btn${wishlisted ? ' wishlisted' : ''}" data-id="${plant.id}"
+        onclick="toggleWishlist(${plant.id})"
+        aria-label="${wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}">♥</button>
       <div class="plant-content">
         <h3 class="plant-title">${plant.name}</h3>
         <p class="plant-details">${plant.care}</p>
@@ -132,7 +165,7 @@ function renderPlants(filteredPlants = plants) {
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 // ─── Plant Detail Modal ───────────────────────────────────────────────────────
