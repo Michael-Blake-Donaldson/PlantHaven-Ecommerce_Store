@@ -88,8 +88,8 @@ body {
 }
 
 .logo-img {
-  height: 38px;
-  width: 38px;
+  height: 52px;
+  width: 52px;
   object-fit: contain;
   display: block;
   flex-shrink: 0;
@@ -673,8 +673,8 @@ body {
   }
 
   .logo-img {
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
   }
 
   .nav-links {
