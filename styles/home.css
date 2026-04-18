@@ -83,8 +83,16 @@ body {
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   transition: opacity var(--transition);
+}
+
+.logo-img {
+  height: 38px;
+  width: 38px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
 }
 
 .logo:hover {
@@ -661,7 +669,12 @@ body {
 
 @media (max-width: 480px) {
   .logo {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+  }
+
+  .logo-img {
+    height: 30px;
+    width: 30px;
   }
 
   .nav-links {
