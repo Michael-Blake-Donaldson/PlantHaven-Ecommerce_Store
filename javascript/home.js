@@ -168,10 +168,53 @@ function renderPlants(filteredPlants = plants) {
   `}).join('');
 }
 
+// ─── Recently Viewed ──────────────────────────────────────────────────────────
+function getRecentlyViewed() {
+  return JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+}
+
+function trackRecentlyViewed(plantId) {
+  const MAX = 8;
+  let list = getRecentlyViewed().filter(id => id !== plantId);
+  list.unshift(plantId);
+  if (list.length > MAX) list = list.slice(0, MAX);
+  localStorage.setItem('recentlyViewed', JSON.stringify(list));
+}
+
+function renderRecentlyViewed() {
+  const section = document.getElementById('recentlyViewedSection');
+  if (!section) return;
+
+  const ids = getRecentlyViewed();
+  const items = ids.map(id => plants.find(p => p.id === id)).filter(Boolean);
+
+  if (items.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+  section.innerHTML = `
+    <h2 class="recently-viewed-title">Recently Viewed</h2>
+    <div class="recently-viewed-scroll">
+      ${items.map(plant => `
+        <button class="rv-card" onclick="openModal(${plant.id})" aria-label="View ${plant.name}">
+          <div class="rv-image" style="background-image: url('${plant.image}')"></div>
+          <p class="rv-name">${plant.name}</p>
+          <p class="rv-price">$${(plant.price / 100).toFixed(2)}</p>
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
 // ─── Plant Detail Modal ───────────────────────────────────────────────────────
 function openModal(plantId) {
   const plant = plants.find(p => p.id === plantId);
   if (!plant) return;
+
+  trackRecentlyViewed(plantId);
+  renderRecentlyViewed();
 
   const modal = document.getElementById('plantModal');
   const body = document.getElementById('modalBody');
